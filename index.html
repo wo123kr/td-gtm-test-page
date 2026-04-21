@@ -29,7 +29,7 @@
   <!-- ============================================================= -->
   <!--
     이 페이지를 fork 해서 사용하기 전에 아래 2개 설정을 바꾸세요:
-    1. GTM Container ID (GTM-XXXXXXX) — 본인의 GTM 컨테이너 ID
+    1. GTM Container ID (GTM-W2BDBW4Q) — 본인의 GTM 컨테이너 ID
     2. 분석 SDK appId / server_url — 선택. URL 쿼리 파라미터로도 가능
        (예: ?appId=YOUR_APP_ID&serverUrl=https://...)
   -->
@@ -39,7 +39,7 @@
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  })(window,document,'script','dataLayer','GTM-W2BDBW4Q');</script>
   <!-- End Google Tag Manager -->
 
   <!-- 분석 SDK (기존 thinkingdata-browser, 전역 ta) -->
@@ -62,7 +62,7 @@
   </script>
 </head>
 <body>
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2BDBW4Q" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <h1>🧪 AE Operation GTM Template — Test Page</h1>
   <p>GTM <b>AE Operation</b> 운영 템플릿의 9개 tagType을 검증하기 위한 페이지. 분석 SDK(<code>ta</code>)와 병존 시나리오를 같이 확인합니다.</p>
@@ -163,7 +163,7 @@ window.thinkingdata.track('ops_test_event', { source: 'test_page' });</pre>
       const gtmScript = document.querySelector('script[src*="googletagmanager.com/gtm.js"]');
       if (gtmScript) {
         const id = (gtmScript.src.match(/id=([^&]+)/) || [])[1] || '?';
-        $('env-gtm').innerHTML = id === 'GTM-XXXXXXX'
+        $('env-gtm').innerHTML = id === 'GTM-W2BDBW4Q'
           ? '<span class="warn">⚠️ 기본값 — 페이지 소스에서 본인 Container ID로 교체 필요</span>'
           : '<span class="ok">✅ ' + id + '</span>';
       }

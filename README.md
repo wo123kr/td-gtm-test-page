@@ -8,12 +8,12 @@ AE Operation GTM 템플릿을 실제 페이지에서 E2E 검증하고, 고객에
 
 ### 1. 본인 GTM 컨테이너 ID로 교체
 
-`index.html` 을 fork 후 **두 곳**의 `GTM-XXXXXXX` 를 본인 컨테이너 ID로 교체:
+`index.html` 을 fork 후 **두 곳**의 `GTM-W2BDBW4Q` 를 본인 컨테이너 ID로 교체:
 
 ```html
-})(window,document,'script','dataLayer','GTM-XXXXXXX');  // ← 여기
+})(window,document,'script','dataLayer','GTM-W2BDBW4Q');  // ← 여기
 
-<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" ...>  // ← 여기
+<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2BDBW4Q" ...>  // ← 여기
 ```
 
 ### 2. 분석 SDK (`ta`) App ID 설정
