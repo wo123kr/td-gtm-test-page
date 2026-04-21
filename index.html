@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AE Operation GTM Template — Test Page</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 24px; color: #222; line-height: 1.6; }
+    h1 { font-size: 24px; margin-top: 0; }
+    h2 { font-size: 18px; margin-top: 32px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    section { margin-bottom: 24px; }
+    button { display: inline-block; margin: 4px 4px 4px 0; padding: 8px 12px; border: 1px solid #d0d0d0; background: #f7f7f7; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    button:hover { background: #eee; }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    th, td { text-align: left; padding: 6px 10px; border: 1px solid #e0e0e0; }
+    th { background: #fafafa; width: 180px; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 4px; font-size: 12px; overflow-x: auto; max-height: 300px; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
+    .warn { color: #c00; }
+    .ok { color: #0a0; }
+    .config { background: #f9f9f9; border: 1px solid #e0e0e0; padding: 12px; border-radius: 4px; margin: 12px 0; font-size: 13px; }
+    .config input { width: 100%; padding: 6px; font-family: monospace; font-size: 12px; border: 1px solid #ccc; border-radius: 3px; }
+    .config label { display: block; margin: 6px 0 2px; font-weight: 500; }
+  </style>
+
+  <!-- ============================================================= -->
+  <!--                 설정 영역 — 사용 전 반드시 수정                 -->
+  <!-- ============================================================= -->
+  <!--
+    이 페이지를 fork 해서 사용하기 전에 아래 2개 설정을 바꾸세요:
+    1. GTM Container ID (GTM-XXXXXXX) — 본인의 GTM 컨테이너 ID
+    2. 분석 SDK appId / server_url — 선택. URL 쿼리 파라미터로도 가능
+       (예: ?appId=YOUR_APP_ID&serverUrl=https://...)
+  -->
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+  <!-- End Google Tag Manager -->
+
+  <!-- 분석 SDK (기존 thinkingdata-browser, 전역 ta) -->
+  <script src="https://cdn.jsdelivr.net/npm/thinkingdata-browser"></script>
+  <script>
+    (function() {
+      const urlParams = new URLSearchParams(location.search);
+      const appId = urlParams.get('appId') || '';
+      const serverUrl = urlParams.get('serverUrl') || 'https://te-receiver-naver.thinkingdata.kr/sync_js';
+
+      if (appId && typeof thinkingdata !== 'undefined') {
+        thinkingdata.init({ appid: appId, server_url: serverUrl });
+        window.ta = thinkingdata;
+        if (ta.quick) ta.quick('autoTrack');
+        console.log('[Test Page] Analytics SDK (ta) initialized', { appId, serverUrl });
+      } else {
+        console.warn('[Test Page] 분석 SDK init 건너뜀. URL에 ?appId=XXX 추가 후 새로고침하면 init 됩니다.');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <h1>🧪 AE Operation GTM Template — Test Page</h1>
+  <p>GTM <b>AE Operation</b> 운영 템플릿의 9개 tagType을 검증하기 위한 페이지. 분석 SDK(<code>ta</code>)와 병존 시나리오를 같이 확인합니다.</p>
+
+  <section>
+    <h2>1. 환경 상태</h2>
+    <table>
+      <tr><th>GTM Container</th><td id="env-gtm">로드 중...</td></tr>
+      <tr><th>분석 SDK <code>window.ta</code></th><td id="env-ta">측정 중... (2초 후)</td></tr>
+      <tr><th>운영 SDK <code>window.TDApp</code></th><td id="env-tdapp">측정 중... (opsInit 태그 발화 후)</td></tr>
+      <tr><th><code>window.TDRemoteConfig</code></th><td id="env-remote">—</td></tr>
+      <tr><th><code>window.TDStrategy</code></th><td id="env-strategy">—</td></tr>
+      <tr><th><code>window.thinkingdata</code></th><td id="env-tdata">—</td></tr>
+    </table>
+    <div class="config">
+      <label>분석 SDK App ID (URL 쿼리 <code>?appId=</code>로 받음):</label>
+      <input id="cfg-appid" readonly placeholder="URL에 ?appId=YOUR_APP_ID 추가 후 새로고침">
+      <label style="margin-top:8px;">분석 SDK Server URL:</label>
+      <input id="cfg-surl" readonly>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Custom Event 발화 — GTM 트리거 연결용</h2>
+    <p>아래 버튼 클릭 시 <code>dataLayer.push({event: ...})</code> 발생. GTM에서 해당 Custom Event 트리거에 <b>AE Operation</b> 태그를 연결해두면 발화됩니다.</p>
+    <button onclick="fireEvent('test_ops_init')">⚙️ test_ops_init (opsInit)</button>
+    <button onclick="fireEvent('test_ops_fetch_config')">⬇️ test_ops_fetch_config</button>
+    <button onclick="fireEvent('test_ops_set_default_values')">📥 test_ops_set_default_values</button>
+    <button onclick="fireEvent('test_ops_clear_default_values')">🗑️ test_ops_clear_default_values</button>
+    <button onclick="fireEvent('test_ops_set_custom_fetch_params')">🏷️ test_ops_set_custom_fetch_params</button>
+    <button onclick="fireEvent('test_ops_remove_custom_fetch_param')">🗑️ test_ops_remove_custom_fetch_param</button>
+    <button onclick="fireEvent('test_ops_add_client_params')">🎯 test_ops_add_client_params</button>
+    <button onclick="fireEvent('test_ops_fetch_strategy')">⬇️ test_ops_fetch_strategy</button>
+    <button onclick="fireEvent('test_ops_track_strategy_event')">📊 test_ops_track_strategy_event</button>
+  </section>
+
+  <section>
+    <h2>3. triggerListener 수신 모니터</h2>
+    <p>운영 SDK가 클라이언트 채널 메시지 수신 시 <code>dataLayer.push({event:'td_ops_trigger', triggerData: {...}})</code> 발생. 여기에 실시간 표시.</p>
+    <pre id="trigger-monitor">(아직 수신 없음 — TE 운영 백엔드에서 테스트 발송 필요)</pre>
+    <button onclick="clearTriggerMonitor()">Clear</button>
+  </section>
+
+  <section>
+    <h2>4. 콘솔 검증 스크립트</h2>
+    <p>DevTools Console에 복사·실행:</p>
+    <pre>// SDK 4종 로드 확인
+['TDApp','TDRemoteConfig','TDStrategy','thinkingdata'].forEach(k =&gt; console.log(k, typeof window[k]));
+
+// 수동 페치 (구성 센터 / 클라이언트 채널)
+TDRemoteConfig.fetch();
+TDStrategy.fetch();
+
+// 구성 데이터 조회
+console.log(TDRemoteConfig.getData());
+
+// 분석 SDK 이벤트 전송 (병존 검증)
+ta.track('analytics_test_event', { source: 'test_page' });
+
+// 운영 SDK 이벤트 전송
+window.thinkingdata.track('ops_test_event', { source: 'test_page' });</pre>
+  </section>
+
+  <section>
+    <h2>5. 네트워크 검증 가이드</h2>
+    <ol>
+      <li>DevTools → <b>Network</b> 탭 열기</li>
+      <li><b>Preserve log</b> ✓</li>
+      <li>Filter: <code>sync_js</code></li>
+      <li>페이지 전체 새로고침 → 10초 관찰</li>
+      <li><b>통과 기준</b>: 분석 SDK 쪽 요청만 있고, 운영 SDK(`TDApp`) 쪽에서 추가로 생성되는 <code>/sync_js</code> 요청이 없음. <code>autoTrack: {all false}</code> 설정 덕분.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>6. GTM 템플릿 설치 방법 (고객용)</h2>
+    <ol>
+      <li>GTM 컨테이너 → <b>Templates</b> → <b>Tag Templates</b> → <b>New</b></li>
+      <li>우상단 <b>⋮</b> → <b>Import</b> → <a href="https://raw.githubusercontent.com/wo123kr/td-mcp/main/gtm/TE%20Operation_KR.tpl" target="_blank">TE Operation_KR.tpl</a> 또는 EN/JP/CN 언어 파일 선택</li>
+      <li>Save</li>
+      <li>Tags → New → "AE Operation" 선택 → 파라미터 설정 → Save</li>
+    </ol>
+    <p>자세한 가이드는 <a href="https://github.com/wo123kr/td-mcp/blob/main/docs/te-operation-web-sdk-research.md" target="_blank">research doc</a> 참조.</p>
+  </section>
+
+  <script>
+    // 환경 감지
+    (function() {
+      const $ = (id) => document.getElementById(id);
+      const urlParams = new URLSearchParams(location.search);
+      const appId = urlParams.get('appId') || '';
+      const serverUrl = urlParams.get('serverUrl') || 'https://te-receiver-naver.thinkingdata.kr/sync_js';
+
+      $('cfg-appid').value = appId || '(미설정)';
+      $('cfg-surl').value = serverUrl;
+
+      // GTM 상태
+      const gtmScript = document.querySelector('script[src*="googletagmanager.com/gtm.js"]');
+      if (gtmScript) {
+        const id = (gtmScript.src.match(/id=([^&]+)/) || [])[1] || '?';
+        $('env-gtm').innerHTML = id === 'GTM-XXXXXXX'
+          ? '<span class="warn">⚠️ 기본값 — 페이지 소스에서 본인 Container ID로 교체 필요</span>'
+          : '<span class="ok">✅ ' + id + '</span>';
+      }
+
+      // 주기적으로 전역 객체 감지
+      function checkGlobals() {
+        const set = (id, val, label) => {
+          const el = $(id);
+          if (typeof val === 'undefined') el.innerHTML = '<span class="warn">❌ undefined</span>';
+          else el.innerHTML = '<span class="ok">✅ ' + (label || typeof val) + '</span>';
+        };
+        set('env-ta', window.ta, window.ta ? 'object (init됨)' : undefined);
+        set('env-tdapp', window.TDApp);
+        set('env-remote', window.TDRemoteConfig);
+        set('env-strategy', window.TDStrategy);
+        set('env-tdata', window.thinkingdata);
+      }
+      setTimeout(checkGlobals, 2000);
+      setInterval(checkGlobals, 5000);
+    })();
+
+    // tagType 버튼 → dataLayer push
+    function fireEvent(eventName) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: eventName, _source: 'test_page', _at: Date.now() });
+      console.log('[Test Page] Pushed:', eventName);
+    }
+
+    function clearTriggerMonitor() {
+      document.getElementById('trigger-monitor').textContent = '(clear됨)';
+    }
+
+    // dataLayer push 감시 — td_ops_trigger 수신 시 UI 업데이트
+    (function() {
+      const dl = (window.dataLayer = window.dataLayer || []);
+      const origPush = dl.push;
+      dl.push = function() {
+        for (let i = 0; i < arguments.length; i++) {
+          const arg = arguments[i];
+          if (arg && arg.event === 'td_ops_trigger') {
+            document.getElementById('trigger-monitor').textContent =
+              '[' + new Date().toISOString() + ']\n' + JSON.stringify(arg, null, 2);
+          }
+        }
+        return origPush.apply(dl, arguments);
+      };
+    })();
+  </script>
+</body>
+</html>
